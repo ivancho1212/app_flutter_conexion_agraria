@@ -10,11 +10,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: ^0.13.3
+  http: ^0.13.0
   google_maps_flutter: ^2.1.2
   flutter_svg: ^1.0.3
   cupertino_icons: ^1.0.6
   carousel_slider: ^4.1.1
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:

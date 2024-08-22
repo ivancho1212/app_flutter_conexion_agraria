@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'property_card.dart'; // Importa el archivo de la tarjeta de propiedad
+import 'contact_form_modal.dart'; // Importa el archivo del formulario de contacto
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -12,6 +13,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<dynamic> properties = [];
   bool isLoading = true;
   bool isError = false;
+  int _selectedIndex = 0; // Para manejar la selección del BottomNavigationBar
 
   @override
   void initState() {
@@ -52,11 +54,27 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    if (index == 2) {
+      // El índice 2 corresponde a "Contáctanos"
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return ContactFormModal(propertyId: ''); // Pasar un propertyId vacío
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Image.asset('lib/assets/logo.png', height: 35),
+        title: Image.asset('lib/assets/logo.png', height: 30),
         centerTitle: true,
         backgroundColor: Colors.white,
       ),
@@ -74,6 +92,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex, // Muestra el ítem seleccionado
+        selectedIconTheme:
+            IconThemeData(size: 20), // Tamaño de los íconos seleccionados
+        unselectedIconTheme:
+            IconThemeData(size: 20), // Tamaño de los íconos no seleccionados
+        showSelectedLabels:
+            true, // Muestra los textos de los íconos seleccionados
+        showUnselectedLabels:
+            true, // Muestra los textos de los íconos no seleccionados
+        selectedItemColor:
+            Colors.green, // Color cuando un ítem está seleccionado
+        unselectedItemColor:
+            Colors.grey, // Color cuando un ítem no está seleccionado
+        onTap: _onItemTapped, // Maneja el tap en el BottomNavigationBar
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.explore),
@@ -92,10 +124,6 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Perfil',
           ),
         ],
-        selectedItemColor:
-            Colors.green, // Color verde para el ítem seleccionado
-        unselectedItemColor:
-            Colors.grey, // Color gris para los ítems no seleccionados
       ),
     );
   }

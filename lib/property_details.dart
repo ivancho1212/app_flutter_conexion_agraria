@@ -148,7 +148,7 @@ class _PropertyDetailsState extends State<PropertyDetails> {
                     SizedBox(height: 16),
                     Row(
                       children: [
-                        Icon(Icons.thermostat, color: Colors.grey),
+                        Icon(Icons.brightness_6_outlined, color: Colors.grey),
                         SizedBox(width: 8),
                         Text('Clima: ${widget.property['clima']}'),
                       ],
@@ -156,7 +156,7 @@ class _PropertyDetailsState extends State<PropertyDetails> {
                     SizedBox(height: 8),
                     Row(
                       children: [
-                        Icon(Icons.square_foot, color: Colors.grey),
+                        Icon(Icons.crop_free, color: Colors.grey),
                         SizedBox(width: 8),
                         Text('Medidas: ${widget.property['medidas']} m²'),
                       ],

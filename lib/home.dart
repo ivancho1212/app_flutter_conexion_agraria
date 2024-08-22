@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'property_card.dart'; // Importa el archivo de la tarjeta de propiedad
-import 'contact_form_modal.dart'; // Importa el archivo del formulario de contacto
+import 'property_card.dart';
+import 'contact_form_modal.dart';
+import 'map_screen.dart';
+import 'profile.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -13,7 +15,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<dynamic> properties = [];
   bool isLoading = true;
   bool isError = false;
-  int _selectedIndex = 0; // Para manejar la selección del BottomNavigationBar
+  int _selectedIndex = 0;
 
   @override
   void initState() {
@@ -60,12 +62,21 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     if (index == 2) {
-      // El índice 2 corresponde a "Contáctanos"
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return ContactFormModal(propertyId: ''); // Pasar un propertyId vacío
+          return ContactFormModal(propertyId: '');
         },
+      );
+    } else if (index == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => MapScreen()),
+      );
+    } else if (index == 3) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ProfileScreen()),
       );
     }
   }
@@ -92,38 +103,34 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex, // Muestra el ítem seleccionado
-        selectedIconTheme:
-            IconThemeData(size: 20), // Tamaño de los íconos seleccionados
-        unselectedIconTheme:
-            IconThemeData(size: 20), // Tamaño de los íconos no seleccionados
-        showSelectedLabels:
-            true, // Muestra los textos de los íconos seleccionados
-        showUnselectedLabels:
-            true, // Muestra los textos de los íconos no seleccionados
-        selectedItemColor:
-            Colors.green, // Color cuando un ítem está seleccionado
-        unselectedItemColor:
-            Colors.grey, // Color cuando un ítem no está seleccionado
-        onTap: _onItemTapped, // Maneja el tap en el BottomNavigationBar
-        items: const [
+        currentIndex: _selectedIndex,
+        iconSize: 24,
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
+        selectedItemColor: Colors.green,
+        unselectedItemColor: Colors.grey,
+        onTap: _onItemTapped,
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.explore),
-            label: 'Explora',
+            icon: Icon(Icons.travel_explore),
+            label: 'Explorar',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.map),
+            icon: Icon(Icons.location_on_outlined),
             label: 'Mapa',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.mail),
+            icon: Icon(Icons.chat_outlined),
             label: 'Contáctanos',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: Icon(Icons.account_circle_outlined),
             label: 'Perfil',
           ),
         ],
+        selectedLabelStyle: TextStyle(fontSize: 12),
+        unselectedLabelStyle: TextStyle(fontSize: 12),
+        type: BottomNavigationBarType.fixed,
       ),
     );
   }

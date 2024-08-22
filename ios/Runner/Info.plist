@@ -41,9 +41,16 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Necesitamos acceder a tu ubicación para mostrar propiedades cercanas.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+	<!-- Aquí se inserta la Google Maps API Key -->
+	<key>GMSApiKey</key>
+	<string>AIzaSyD1J68N9Y11axVHSxLEF4J_wJhYNzRuAsg</string>
+
 </dict>
 </plist>

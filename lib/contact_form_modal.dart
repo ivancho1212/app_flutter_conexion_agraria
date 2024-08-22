@@ -63,90 +63,109 @@ class _ContactFormModalState extends State<ContactFormModal> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text('Contáctenos'),
-      content: Form(
-        key: _formKey,
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10), // Esquinas menos redondeadas
+      ),
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.8, // Ancho personalizado
+        padding: EdgeInsets.all(16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextFormField(
-              decoration: InputDecoration(labelText: 'Nombre'),
-              onSaved: (value) => _name = value ?? '',
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Por favor ingrese su nombre';
-                }
-                if (!RegExp(r'^[a-zA-Z]+ [a-zA-Z]+$').hasMatch(value)) {
-                  return 'Por favor ingrese un nombre y un apellido';
-                }
-                if (value.length < 2 || value.length > 50) {
-                  return 'El nombre debe tener entre 2 y 50 caracteres';
-                }
-                return null;
-              },
+            Text(
+              'Contáctenos',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            TextFormField(
-              decoration: InputDecoration(labelText: 'Correo electrónico'),
-              onSaved: (value) => _email = value ?? '',
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Por favor ingrese su correo electrónico';
-                }
-                if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                  return 'Por favor ingrese un correo electrónico válido';
-                }
-                if (value.length < 5 || value.length > 50) {
-                  return 'El correo debe tener entre 5 y 50 caracteres';
-                }
-                return null;
-              },
+            SizedBox(height: 16),
+            Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Nombre'),
+                    onSaved: (value) => _name = value ?? '',
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor ingrese su nombre';
+                      }
+                      if (!RegExp(r'^[a-zA-Z]+ [a-zA-Z]+$').hasMatch(value)) {
+                        return 'Por favor ingrese un nombre y un apellido';
+                      }
+                      if (value.length < 2 || value.length > 50) {
+                        return 'El nombre debe tener entre 2 y 50 caracteres';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    decoration:
+                        InputDecoration(labelText: 'Correo electrónico'),
+                    onSaved: (value) => _email = value ?? '',
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor ingrese su correo electrónico';
+                      }
+                      if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                        return 'Por favor ingrese un correo electrónico válido';
+                      }
+                      if (value.length < 5 || value.length > 50) {
+                        return 'El correo debe tener entre 5 y 50 caracteres';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Teléfono'),
+                    keyboardType: TextInputType.phone,
+                    onSaved: (value) => _phone = value ?? '',
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor ingrese su número de teléfono';
+                      }
+                      if (!RegExp(r'^\d{7,15}$').hasMatch(value)) {
+                        return 'El teléfono debe tener entre 7 y 15 dígitos';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Mensaje'),
+                    maxLines: 5,
+                    onSaved: (value) => _message = value ?? '',
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor ingrese su mensaje';
+                      }
+                      if (value.length < 10 || value.length > 500) {
+                        return 'El mensaje debe tener entre 10 y 500 caracteres';
+                      }
+                      return null;
+                    },
+                  ),
+                ],
+              ),
             ),
-            TextFormField(
-              decoration: InputDecoration(labelText: 'Teléfono'),
-              keyboardType: TextInputType.phone,
-              onSaved: (value) => _phone = value ?? '',
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Por favor ingrese su número de teléfono';
-                }
-                if (!RegExp(r'^\d{7,15}$').hasMatch(value)) {
-                  return 'El teléfono debe tener entre 7 y 15 dígitos';
-                }
-                return null;
-              },
-            ),
-            TextFormField(
-              decoration: InputDecoration(labelText: 'Mensaje'),
-              maxLines: 5,
-              onSaved: (value) => _message = value ?? '',
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Por favor ingrese su mensaje';
-                }
-                if (value.length < 10 || value.length > 500) {
-                  return 'El mensaje debe tener entre 10 y 500 caracteres';
-                }
-                return null;
-              },
+            SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Cancelar'),
+                ),
+                ElevatedButton(
+                  onPressed: _submitForm,
+                  child: Text('Enviar'),
+                ),
+              ],
             ),
           ],
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: Text('Cancelar'),
-        ),
-        ElevatedButton(
-          onPressed: _submitForm,
-          child: Text('Enviar'),
-        ),
-      ],
-      contentPadding: EdgeInsets.all(16),
-      insetPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 24.0),
     );
   }
 }

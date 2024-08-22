@@ -133,15 +133,25 @@ class _PropertyCardState extends State<PropertyCard> {
                 children: [
                   Text(
                     widget.property['nombre'],
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 8),
-                  Text(
-                      '${widget.property['departamento'].join(', ')}, ${widget.property['municipio']}'),
-                  SizedBox(height: 8),
-                  Text('Cost: ${widget.property['precio_metro_cuadrado']}'),
-                  SizedBox(height: 8),
-                  // Puedes agregar más detalles si es necesario
+                  SizedBox(height: 1), // Reduce el espacio aquí
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '${widget.property['departamento'].join(', ')}, ${widget.property['municipio']}',
+                        style: TextStyle(fontSize: 12), // Tamaño reducido
+                      ),
+                      Text(
+                        '${widget.property['precio_metro_cuadrado']}',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),

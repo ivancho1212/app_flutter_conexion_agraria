@@ -48,11 +48,10 @@ class _PropertyCardState extends State<PropertyCard> {
                       carouselController: _carouselController,
                       options: CarouselOptions(
                         height: double.infinity,
-                        viewportFraction: 1.0,
-                        autoPlay: false, // Desactiva el autoplay
+                        viewportFraction: 1.0, // Elimina espacio entre imágenes
+                        autoPlay: false,
                         enlargeCenterPage: false,
-                        enableInfiniteScroll:
-                            false, // Desactiva el scroll infinito
+                        enableInfiniteScroll: false,
                         onPageChanged: (index, reason) {
                           setState(() {
                             _currentIndex = index;
@@ -63,7 +62,7 @@ class _PropertyCardState extends State<PropertyCard> {
                         return Builder(
                           builder: (BuildContext context) {
                             return Container(
-                              margin: EdgeInsets.symmetric(horizontal: 5.0),
+                              width: double.infinity,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(15.0),
                                 child: Image.network(
@@ -107,16 +106,14 @@ class _PropertyCardState extends State<PropertyCard> {
                       return GestureDetector(
                         onTap: () => _carouselController.jumpToPage(index),
                         child: Container(
-                          width: 8.0, // Aumenta el tamaño de los puntos
-                          height: 8.0, // Aumenta el tamaño de los puntos
+                          width: 8.0,
+                          height: 8.0,
                           margin: EdgeInsets.symmetric(horizontal: 4.0),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: index == _currentIndex
-                                ? Colors
-                                    .white // Color blanco para el punto activo
-                                : Colors.white.withOpacity(
-                                    0.5), // Color blanco para los puntos inactivos
+                                ? Colors.white
+                                : Colors.white.withOpacity(0.5),
                           ),
                         ),
                       );
@@ -144,7 +141,7 @@ class _PropertyCardState extends State<PropertyCard> {
                         style: TextStyle(fontSize: 12), // Tamaño reducido
                       ),
                       Text(
-                        '${widget.property['precio_metro_cuadrado']}',
+                        '${widget.property['precio_arriendo']}', // Muestra el precio de arriendo
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,

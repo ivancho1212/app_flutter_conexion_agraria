@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'contact_form_modal.dart'; // Reemplaza con la ruta correcta
+import 'contact_form_modal.dart';
 
 class PropertyDetails extends StatefulWidget {
   final dynamic property;
@@ -39,7 +39,8 @@ class _PropertyDetailsState extends State<PropertyDetails> {
                     carouselController: _carouselController,
                     options: CarouselOptions(
                       height: MediaQuery.of(context).size.height * 0.4,
-                      viewportFraction: 2.0,
+                      viewportFraction:
+                          1.0, // Ajuste para eliminar espacio entre imágenes
                       autoPlay: false,
                       enlargeCenterPage: false,
                       enableInfiniteScroll: false,
@@ -147,18 +148,24 @@ class _PropertyDetailsState extends State<PropertyDetails> {
                     Text(widget.property['descripcion']),
                     SizedBox(height: 16),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment
+                          .spaceBetween, // Distribuye el espacio
                       children: [
-                        Icon(Icons.brightness_6_outlined, color: Colors.grey),
-                        SizedBox(width: 8),
-                        Text('Clima: ${widget.property['clima']}'),
-                      ],
-                    ),
-                    SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Icon(Icons.crop_free, color: Colors.grey),
-                        SizedBox(width: 8),
-                        Text('Medidas: ${widget.property['medidas']} m²'),
+                        Row(
+                          children: [
+                            Icon(Icons.brightness_6_outlined,
+                                color: Colors.grey),
+                            SizedBox(width: 8),
+                            Text('Clima: ${widget.property['clima']}'),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Icon(Icons.crop_free, color: Colors.grey),
+                            SizedBox(width: 8),
+                            Text('Medidas: ${widget.property['medida']}'),
+                          ],
+                        ),
                       ],
                     ),
                   ],
@@ -192,7 +199,7 @@ class _PropertyDetailsState extends State<PropertyDetails> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '\$${widget.property['precio_metro_cuadrado']} / m²',
+                        '\$${widget.property['precio_arriendo']} / mes', // Suponiendo que el precio de arriendo es mensual
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),

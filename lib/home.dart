@@ -67,17 +67,32 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (BuildContext context) {
           return ContactFormModal(propertyId: '');
         },
-      );
+      ).then((_) {
+        setState(() {
+          _selectedIndex =
+              0; // Volver a seleccionar "Explorar" después de cerrar el modal
+        });
+      });
     } else if (index == 1) {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => MapScreen()),
-      );
+      ).then((_) {
+        setState(() {
+          _selectedIndex =
+              0; // Volver a "Explorar" después de cerrar la pantalla de Mapa
+        });
+      });
     } else if (index == 3) {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => ProfileScreen()),
-      );
+      ).then((_) {
+        setState(() {
+          _selectedIndex =
+              0; // Volver a "Explorar" después de cerrar la pantalla de Perfil
+        });
+      });
     }
   }
 

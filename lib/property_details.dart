@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:page_view_indicators/circle_page_indicator.dart';
 import 'contact_form_modal.dart';
 
 class PropertyDetails extends StatefulWidget {
   final dynamic property;
 
-  const PropertyDetails({Key? key, required this.property}) : super(key: key);
+  const PropertyDetails({super.key, required this.property});
 
   @override
   _PropertyDetailsState createState() => _PropertyDetailsState();
 }
 
 class _PropertyDetailsState extends State<PropertyDetails> {
-  final CarouselController _carouselController = CarouselController();
-  int _currentIndex = 0;
+  final _currentPageNotifier = ValueNotifier<int>(0);
 
   @override
   Widget build(BuildContext context) {
@@ -34,52 +33,43 @@ class _PropertyDetailsState extends State<PropertyDetails> {
             children: [
               Stack(
                 children: [
-                  // Slider de imágenes
-                  CarouselSlider(
-                    carouselController: _carouselController,
-                    options: CarouselOptions(
-                      height: MediaQuery.of(context).size.height * 0.4,
-                      viewportFraction:
-                          1.0, // Ajuste para eliminar espacio entre imágenes
-                      autoPlay: false,
-                      enlargeCenterPage: false,
-                      enableInfiniteScroll: false,
-                      onPageChanged: (index, reason) {
-                        setState(() {
-                          _currentIndex = index;
-                        });
+                  // Slider de imágenes usando PageView
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.4,
+                    child: PageView.builder(
+                      itemCount: imageUrls.length,
+                      onPageChanged: (index) {
+                        _currentPageNotifier.value = index;
+                      },
+                      itemBuilder: (context, index) {
+                        return Image.network(
+                          imageUrls[index],
+                          fit: BoxFit.cover,
+                          loadingBuilder: (BuildContext context, Widget child,
+                              ImageChunkEvent? loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Center(
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes !=
+                                        null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        loadingProgress.expectedTotalBytes!
+                                    : null,
+                              ),
+                            );
+                          },
+                        );
                       },
                     ),
-                    items: imageUrls.map((url) {
-                      return Builder(
-                        builder: (BuildContext context) {
-                          return Container(
-                            width: MediaQuery.of(context).size.width,
-                            child: Image.network(
-                              url,
-                              fit: BoxFit.cover,
-                              loadingBuilder: (BuildContext context,
-                                  Widget child,
-                                  ImageChunkEvent? loadingProgress) {
-                                if (loadingProgress == null) return child;
-                                return Center(
-                                  child: CircularProgressIndicator(
-                                    value: loadingProgress.expectedTotalBytes !=
-                                            null
-                                        ? loadingProgress
-                                                .cumulativeBytesLoaded /
-                                            (loadingProgress
-                                                    .expectedTotalBytes ??
-                                                1)
-                                        : null,
-                                  ),
-                                );
-                              },
-                            ),
-                          );
-                        },
-                      );
-                    }).toList(),
+                  ),
+                  // Indicador de la página actual
+                  Positioned(
+                    bottom: 10,
+                    right: 10,
+                    child: CirclePageIndicator(
+                      itemCount: imageUrls.length,
+                      currentPageNotifier: _currentPageNotifier,
+                    ),
                   ),
                   // Icono de flecha para regresar
                   Positioned(
@@ -94,28 +84,11 @@ class _PropertyDetailsState extends State<PropertyDetails> {
                           color: Colors.grey.withOpacity(0.7),
                           shape: BoxShape.circle,
                         ),
-                        padding: EdgeInsets.all(8),
-                        child: Icon(
+                        padding: const EdgeInsets.all(8),
+                        child: const Icon(
                           Icons.arrow_back,
                           color: Colors.white,
                         ),
-                      ),
-                    ),
-                  ),
-                  // Numeración de imágenes
-                  Positioned(
-                    bottom: 10,
-                    right: 10,
-                    child: Container(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.5),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        '${_currentIndex + 1}/${imageUrls.length}',
-                        style: TextStyle(color: Colors.white),
                       ),
                     ),
                   ),
@@ -129,10 +102,10 @@ class _PropertyDetailsState extends State<PropertyDetails> {
                   children: [
                     Text(
                       widget.property['nombre'],
-                      style:
-                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          fontSize: 22, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Row(
                       children: [
                         Expanded(
@@ -144,25 +117,24 @@ class _PropertyDetailsState extends State<PropertyDetails> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Text(widget.property['descripcion']),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment
-                          .spaceBetween, // Distribuye el espacio
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
                           children: [
-                            Icon(Icons.brightness_6_outlined,
+                            const Icon(Icons.brightness_6_outlined,
                                 color: Colors.grey),
-                            SizedBox(width: 8),
+                            const SizedBox(width: 8),
                             Text('Clima: ${widget.property['clima']}'),
                           ],
                         ),
                         Row(
                           children: [
-                            Icon(Icons.crop_free, color: Colors.grey),
-                            SizedBox(width: 8),
+                            const Icon(Icons.crop_free, color: Colors.grey),
+                            const SizedBox(width: 8),
                             Text('Medidas: ${widget.property['medida']}'),
                           ],
                         ),
@@ -186,7 +158,7 @@ class _PropertyDetailsState extends State<PropertyDetails> {
                     color: Colors.grey.withOpacity(0.3),
                     spreadRadius: 3,
                     blurRadius: 10,
-                    offset: Offset(0, -2),
+                    offset: const Offset(0, -2),
                   ),
                 ],
               ),
@@ -199,11 +171,11 @@ class _PropertyDetailsState extends State<PropertyDetails> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '\$${widget.property['precio_arriendo']} / mes', // Suponiendo que el precio de arriendo es mensual
-                        style: TextStyle(
+                        '\$${widget.property['precio_arriendo']} / mes',
+                        style: const TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 4),
+                      const SizedBox(height: 4),
                       Text(
                         'Fecha de creación: ${widget.property['fecha_creacion']}',
                         style: TextStyle(
@@ -214,7 +186,6 @@ class _PropertyDetailsState extends State<PropertyDetails> {
                   ElevatedButton(
                     onPressed: () {
                       if (widget.property['id'] != null) {
-                        // Abre el formulario en una ventana emergente (modal) con el ID del predio
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
@@ -225,18 +196,17 @@ class _PropertyDetailsState extends State<PropertyDetails> {
                           },
                         );
                       } else {
-                        // Maneja el caso donde el ID es null (podrías mostrar un mensaje de error)
                         print('Error: ID del predio es null');
                       }
                     },
-                    child: Text('Me interesa',
-                        style: TextStyle(color: Colors.white)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green.shade600,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
+                    child: Text('Me interesa',
+                        style: TextStyle(color: Colors.white)),
                   ),
                 ],
               ),

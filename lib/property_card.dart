@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:page_view_indicators/circle_page_indicator.dart';
 import 'property_details.dart'; // Importa la nueva pantalla
 
 class PropertyCard extends StatefulWidget {
   final dynamic property;
 
-  const PropertyCard({Key? key, required this.property}) : super(key: key);
+  const PropertyCard({super.key, required this.property});
 
   @override
   _PropertyCardState createState() => _PropertyCardState();
 }
 
 class _PropertyCardState extends State<PropertyCard> {
-  final CarouselController _carouselController = CarouselController();
-  int _currentIndex = 0;
+  final _currentPageNotifier = ValueNotifier<int>(0);
 
   @override
   Widget build(BuildContext context) {
@@ -37,87 +36,49 @@ class _PropertyCardState extends State<PropertyCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Slider de imágenes
+            // Slider de imágenes utilizando PageView
             Stack(
               children: [
                 AspectRatio(
                   aspectRatio: 1.2, // Mantiene el aspecto cuadrado
-                  child: Container(
-                    height: 130.0, // Ajusta la altura de la imagen aquí
-                    child: CarouselSlider(
-                      carouselController: _carouselController,
-                      options: CarouselOptions(
-                        height: double.infinity,
-                        viewportFraction: 1.0, // Elimina espacio entre imágenes
-                        autoPlay: false,
-                        enlargeCenterPage: false,
-                        enableInfiniteScroll: false,
-                        onPageChanged: (index, reason) {
-                          setState(() {
-                            _currentIndex = index;
-                          });
-                        },
-                      ),
-                      items: imageUrls.map((url) {
-                        return Builder(
-                          builder: (BuildContext context) {
-                            return Container(
-                              width: double.infinity,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(15.0),
-                                child: Image.network(
-                                  url,
-                                  fit: BoxFit.cover,
-                                  loadingBuilder: (BuildContext context,
-                                      Widget child,
-                                      ImageChunkEvent? loadingProgress) {
-                                    if (loadingProgress == null) return child;
-                                    return Center(
-                                      child: CircularProgressIndicator(
-                                        value: loadingProgress
-                                                    .expectedTotalBytes !=
-                                                null
-                                            ? loadingProgress
-                                                    .cumulativeBytesLoaded /
-                                                (loadingProgress
-                                                        .expectedTotalBytes ??
-                                                    1)
-                                            : null,
-                                      ),
-                                    );
-                                  },
-                                ),
+                  child: PageView.builder(
+                    itemCount: imageUrls.length,
+                    onPageChanged: (index) {
+                      _currentPageNotifier.value =
+                          index; // Actualiza el indicador de página
+                    },
+                    itemBuilder: (context, index) {
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(15.0),
+                        child: Image.network(
+                          imageUrls[index],
+                          fit: BoxFit.cover,
+                          loadingBuilder: (BuildContext context, Widget child,
+                              ImageChunkEvent? loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Center(
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes !=
+                                        null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        (loadingProgress.expectedTotalBytes ??
+                                            1)
+                                    : null,
                               ),
                             );
                           },
-                        );
-                      }).toList(),
-                    ),
+                        ),
+                      );
+                    },
                   ),
                 ),
                 Positioned(
                   bottom: 10,
                   left: 0,
                   right: 0,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: imageUrls.asMap().entries.map((entry) {
-                      int index = entry.key;
-                      return GestureDetector(
-                        onTap: () => _carouselController.jumpToPage(index),
-                        child: Container(
-                          width: 8.0,
-                          height: 8.0,
-                          margin: EdgeInsets.symmetric(horizontal: 4.0),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: index == _currentIndex
-                                ? Colors.white
-                                : Colors.white.withOpacity(0.5),
-                          ),
-                        ),
-                      );
-                    }).toList(),
+                  child: CirclePageIndicator(
+                    itemCount: imageUrls.length,
+                    currentPageNotifier: _currentPageNotifier,
                   ),
                 ),
               ],
@@ -130,19 +91,20 @@ class _PropertyCardState extends State<PropertyCard> {
                 children: [
                   Text(
                     widget.property['nombre'],
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        fontSize: 22, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 1), // Reduce el espacio aquí
+                  const SizedBox(height: 1), // Reduce el espacio aquí
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         '${widget.property['departamento'].join(', ')}, ${widget.property['municipio']}',
-                        style: TextStyle(fontSize: 12), // Tamaño reducido
+                        style: const TextStyle(fontSize: 12), // Tamaño reducido
                       ),
                       Text(
                         '${widget.property['precio_arriendo']}', // Muestra el precio de arriendo
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),

@@ -7,6 +7,8 @@ import 'map_screen.dart';
 import 'profile.dart';
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -65,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return ContactFormModal(propertyId: '');
+          return const ContactFormModal(propertyId: '');
         },
       ).then((_) {
         setState(() {
@@ -76,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
     } else if (index == 1) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => MapScreen()),
+        MaterialPageRoute(builder: (context) => const MapScreen()),
       ).then((_) {
         setState(() {
           _selectedIndex =
@@ -86,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
     } else if (index == 3) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => ProfileScreen()),
+        MaterialPageRoute(builder: (context) => const ProfileScreen()),
       ).then((_) {
         setState(() {
           _selectedIndex =
@@ -107,9 +109,9 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: isLoading
-            ? Center(child: CircularProgressIndicator())
+            ? const Center(child: CircularProgressIndicator())
             : isError
-                ? Center(child: Text('Failed to load data.'))
+                ? const Center(child: Text('Failed to load data.'))
                 : ListView.builder(
                     itemCount: properties.length,
                     itemBuilder: (context, index) {
@@ -143,8 +145,8 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Perfil',
           ),
         ],
-        selectedLabelStyle: TextStyle(fontSize: 12),
-        unselectedLabelStyle: TextStyle(fontSize: 12),
+        selectedLabelStyle: const TextStyle(fontSize: 12),
+        unselectedLabelStyle: const TextStyle(fontSize: 12),
         type: BottomNavigationBarType.fixed,
       ),
     );

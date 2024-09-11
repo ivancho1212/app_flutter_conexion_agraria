@@ -3,15 +3,17 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 class MapScreen extends StatefulWidget {
+  const MapScreen({super.key});
+
   @override
   _MapScreenState createState() => _MapScreenState();
 }
 
 class _MapScreenState extends State<MapScreen> {
   GoogleMapController? _mapController;
-  LatLng _initialPosition = LatLng(0, 0);
-  Location _location = Location();
-  Set<Marker> _markers = {};
+  LatLng _initialPosition = const LatLng(0, 0);
+  final Location _location = Location();
+  final Set<Marker> _markers = {};
 
   @override
   void initState() {
@@ -31,9 +33,9 @@ class _MapScreenState extends State<MapScreen> {
       // Agregar marcador para la ubicación del usuario
       _markers.add(
         Marker(
-          markerId: MarkerId('userLocation'),
+          markerId: const MarkerId('userLocation'),
           position: _initialPosition,
-          infoWindow: InfoWindow(title: 'Tu ubicación'),
+          infoWindow: const InfoWindow(title: 'Tu ubicación'),
         ),
       );
 
@@ -48,7 +50,7 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mapa'),
+        title: const Text('Mapa'),
       ),
       body: GoogleMap(
         initialCameraPosition: CameraPosition(

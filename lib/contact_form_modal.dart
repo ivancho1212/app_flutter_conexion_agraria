@@ -5,8 +5,7 @@ import 'dart:convert';
 class ContactFormModal extends StatefulWidget {
   final String propertyId;
 
-  const ContactFormModal({Key? key, required this.propertyId})
-      : super(key: key);
+  const ContactFormModal({super.key, required this.propertyId});
 
   @override
   _ContactFormModalState createState() => _ContactFormModalState();
@@ -41,7 +40,7 @@ class _ContactFormModalState extends State<ContactFormModal> {
         if (response.statusCode == 200) {
           // Mostrar mensaje de éxito
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Formulario enviado exitosamente')),
+            const SnackBar(content: Text('Formulario enviado exitosamente')),
           );
 
           // Cerrar el modal después de enviar
@@ -49,13 +48,13 @@ class _ContactFormModalState extends State<ContactFormModal> {
         } else {
           // Manejar errores si el estado no es 200
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error al enviar el formulario')),
+            const SnackBar(content: Text('Error al enviar el formulario')),
           );
         }
       } catch (error) {
         // Manejar errores de conexión
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error de conexión')),
+          const SnackBar(content: Text('Error de conexión')),
         );
       }
     }
@@ -69,22 +68,22 @@ class _ContactFormModalState extends State<ContactFormModal> {
       ),
       child: Container(
         width: MediaQuery.of(context).size.width * 0.8, // Ancho personalizado
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
+            const Text(
               'Contáctenos',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Form(
               key: _formKey,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   TextFormField(
-                    decoration: InputDecoration(labelText: 'Nombre'),
+                    decoration: const InputDecoration(labelText: 'Nombre'),
                     onSaved: (value) => _name = value ?? '',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -101,7 +100,7 @@ class _ContactFormModalState extends State<ContactFormModal> {
                   ),
                   TextFormField(
                     decoration:
-                        InputDecoration(labelText: 'Correo electrónico'),
+                        const InputDecoration(labelText: 'Correo electrónico'),
                     onSaved: (value) => _email = value ?? '',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -117,7 +116,7 @@ class _ContactFormModalState extends State<ContactFormModal> {
                     },
                   ),
                   TextFormField(
-                    decoration: InputDecoration(labelText: 'Teléfono'),
+                    decoration: const InputDecoration(labelText: 'Teléfono'),
                     keyboardType: TextInputType.phone,
                     onSaved: (value) => _phone = value ?? '',
                     validator: (value) {
@@ -131,7 +130,7 @@ class _ContactFormModalState extends State<ContactFormModal> {
                     },
                   ),
                   TextFormField(
-                    decoration: InputDecoration(labelText: 'Mensaje'),
+                    decoration: const InputDecoration(labelText: 'Mensaje'),
                     maxLines: 5,
                     onSaved: (value) => _message = value ?? '',
                     validator: (value) {
@@ -147,7 +146,7 @@ class _ContactFormModalState extends State<ContactFormModal> {
                 ],
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -155,11 +154,11 @@ class _ContactFormModalState extends State<ContactFormModal> {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('Cancelar'),
+                  child: const Text('Cancelar'),
                 ),
                 ElevatedButton(
                   onPressed: _submitForm,
-                  child: Text('Enviar'),
+                  child: const Text('Enviar'),
                 ),
               ],
             ),

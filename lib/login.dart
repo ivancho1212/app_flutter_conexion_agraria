@@ -1,37 +1,37 @@
 import 'package:flutter/material.dart';
 
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+class LoginScreen extends StatelessWidget {
+  const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Perfil de Usuario'),
+        title: const Text('Inicio de Sesión'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: <Widget>[
             const TextField(
-              decoration: InputDecoration(labelText: 'Nombre'),
+              decoration: InputDecoration(labelText: 'Correo electrónico'),
             ),
             const TextField(
-              decoration: InputDecoration(labelText: 'Correo electrónico'),
+              decoration: InputDecoration(labelText: 'Contraseña'),
+              obscureText: true,
             ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Acción para guardar cambios
+                // Acción de iniciar sesión
               },
-              child: const Text('Guardar Cambios'),
+              child: const Text('Iniciar Sesión'),
             ),
-            ElevatedButton(
+            TextButton(
               onPressed: () {
-                // Acción para eliminar cuenta
+                Navigator.pushNamed(context, '/register');
               },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-              child: const Text('Eliminar Cuenta'),
+              child: const Text('¿No tienes una cuenta? Regístrate'),
             ),
           ],
         ),

@@ -22,6 +22,8 @@ class _ContactFormModalState extends State<ContactFormModal> {
     if (_formKey.currentState?.validate() ?? false) {
       _formKey.currentState?.save();
 
+      print('Nombre ingresado: $_name'); // Log para depuración
+
       final formData = {
         'propertyId': widget.propertyId,
         'name': _name,
@@ -89,9 +91,12 @@ class _ContactFormModalState extends State<ContactFormModal> {
                       if (value == null || value.isEmpty) {
                         return 'Por favor ingrese su nombre';
                       }
-                      if (!RegExp(r'^[a-zA-Z]+ [a-zA-Z]+$').hasMatch(value)) {
-                        return 'Por favor ingrese un nombre y un apellido';
+                      // Expresión regular mejorada para permitir más flexibilidad en nombres compuestos
+                      if (!RegExp(r'^[a-zA-ZÀ-ÿ]+(?: [a-zA-ZÀ-ÿ]+)+$')
+                          .hasMatch(value)) {
+                        return 'Por favor ingrese un nombre y un apellido válidos';
                       }
+
                       if (value.length < 2 || value.length > 50) {
                         return 'El nombre debe tener entre 2 y 50 caracteres';
                       }

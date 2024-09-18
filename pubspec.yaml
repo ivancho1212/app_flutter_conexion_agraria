@@ -33,7 +33,7 @@ flutter_icons:
   android: true
   ios: true
   image_path: "lib/assets/icono2.png"  # Define la imagen que usará tanto para Android como para iOS
-  adaptive_icon_background: "#000000"  # Fondo para el ícono adaptativo (solo en Android)
+  adaptive_icon_background: "#ffffff"  # Fondo para el ícono adaptativo (solo en Android)
   adaptive_icon_foreground: "lib/assets/icono2.png"  # Imagen del ícono adaptativo (solo en Android)
 
 flutter:

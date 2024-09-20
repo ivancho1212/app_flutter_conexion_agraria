@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http; // Para realizar solicitudes HTTP
 import 'package:permission_handler/permission_handler.dart'
     as perm_handler; // Para manejar permisos
 import 'package:page_view_indicators/circle_page_indicator.dart'; // Para los indicadores de página en el slider de imágenes
-import 'property_details.dart'; // Importa la nueva pantalla
+import 'contact_form_modal.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -135,132 +135,212 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
+  // Función que maneja el clic en un marcador
 void _onMarkerTapped(dynamic property) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
-    barrierColor: Colors.transparent, // Hace que la pantalla no se oscurezca
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(25.0), // Bordes redondeados en la parte superior
-      ),
-    ),
+    barrierColor: Colors.black.withOpacity(0.5),
+    backgroundColor: Colors.transparent,
     builder: (BuildContext context) {
       final List<String> imageUrls = property['image'] != null
           ? List<String>.from(property['image']
               .map((url) => url ?? 'lib/assets/default_image.png'))
-          : ['lib/assets/default_image.png']; // Imagen por defecto si es null
+          : ['lib/assets/default_image.png'];
 
       final _currentPageNotifier = ValueNotifier<int>(0);
 
-      return GestureDetector(
-        onTap: () {
-          // Cierra el modal
-          Navigator.pop(context);
-          // Redirige a la pantalla PropertyDetails
-          Navigator.of(context, rootNavigator: true).push(
-            MaterialPageRoute(
-              builder: (context) => PropertyDetails(property: property),
-            ),
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return TweenAnimationBuilder<double>(
+            tween: Tween<double>(begin: 0.37, end: 0.7),
+            duration: const Duration(milliseconds: 800),
+            builder: (context, size, child) {
+              return DraggableScrollableSheet(
+                initialChildSize: 0.37, // Se ajustó a 0.37 como tamaño inicial
+                minChildSize: 0.37,     // Tamaño mínimo del modal ahora es 0.37
+                maxChildSize: 0.7,      // Tamaño máximo del modal es 0.7
+                builder: (context, scrollController) {
+                  return AnimatedOpacity(
+                    opacity: size == 0.7 ? 1.0 : 0.9,
+                    duration: const Duration(milliseconds: 700),
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(25.0),
+                        ),
+                      ),
+                      child: Stack(
+                        children: [
+                          ListView(
+                            controller: scrollController,
+                            children: [
+                              ClipRRect(
+                                borderRadius: const BorderRadius.vertical(
+                                  top: Radius.circular(25.0),
+                                ),
+                                child: SizedBox(
+                                  height: size == 0.37 ? 150 : 300,  // Se redujo la altura a 200
+                                  width: double.infinity,
+                                  child: PageView.builder(
+                                    itemCount: imageUrls.length,
+                                    onPageChanged: (index) {
+                                      _currentPageNotifier.value = index;
+                                    },
+                                    itemBuilder: (context, index) {
+                                      return Image.network(
+                                        imageUrls[index],
+                                        fit: BoxFit.cover,
+                                        loadingBuilder: (BuildContext context,
+                                            Widget child,
+                                            ImageChunkEvent? loadingProgress) {
+                                          if (loadingProgress == null) {
+                                            return child;
+                                          }
+                                          return Center(
+                                            child: CircularProgressIndicator(
+                                              value: loadingProgress
+                                                          .expectedTotalBytes !=
+                                                      null
+                                                  ? loadingProgress
+                                                          .cumulativeBytesLoaded /
+                                                      (loadingProgress
+                                                              .expectedTotalBytes ??
+                                                          1)
+                                                  : null,
+                                            ),
+                                          );
+                                        },
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          return Image.asset(
+                                            'lib/assets/default_image.png',
+                                            fit: BoxFit.cover,
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                child: Text(
+                                  property['name'],
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      property['address'],
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                    Text(
+                                      '${property['measure']}',
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                    Text(
+                                      '${property['climate']}',
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              if (size == 0.7)
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+                                  child: Text(
+                                    'Descripción: ${property['description']}',
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                ),
+                              const SizedBox(height: 30), // Espacio para el precio fijo
+                            ],
+                          ),
+                          Positioned(
+                            top: 10,
+                            right: 10,
+                            child: IconButton(
+                              icon: const Icon(Icons.close, color: Colors.white),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10.0, horizontal: 20.0),
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                              ), // Se eliminó la sombra aquí
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    '\$${property['price']} / mes',
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      if (property['id'] != null) {
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return ContactFormModal(
+                                              propertyId: property['id'],
+                                            );
+                                          },
+                                        );
+                                      } else {
+                                        print('Error: ID del predio es null');
+                                      }
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.green.shade600,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                    child: const Text('Me interesa', style: TextStyle(color: Colors.white)),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
           );
         },
-        child: FractionallySizedBox(
-          heightFactor: 0.34, // Ajusta la altura del modal
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Stack(
-                children: [
-                  ClipRRect(
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(25.0), // Esquinas superiores redondeadas
-                    ),
-                    child: SizedBox(
-                      height: 210, // Puedes ajustar la altura según lo necesario
-                      width: double.infinity, // Ocupa todo el ancho
-                      child: PageView.builder(
-                        itemCount: imageUrls.length,
-                        onPageChanged: (index) {
-                          _currentPageNotifier.value = index;
-                        },
-                        itemBuilder: (context, index) {
-                          return Image.network(
-                            imageUrls[index],
-                            fit: BoxFit.cover, // Asegura que la imagen cubra todo
-                            loadingBuilder: (BuildContext context, Widget child,
-                                ImageChunkEvent? loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              return Center(
-                                child: CircularProgressIndicator(
-                                  value: loadingProgress.expectedTotalBytes != null
-                                      ? loadingProgress.cumulativeBytesLoaded /
-                                          (loadingProgress.expectedTotalBytes ?? 1)
-                                      : null,
-                                ),
-                              );
-                            },
-                            errorBuilder: (context, error, stackTrace) {
-                              return Image.asset(
-                                'lib/assets/default_image.png',
-                                fit: BoxFit.cover, // Imagen por defecto que cubre todo
-                              );
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top: 10,
-                    right: 10,
-                    child: IconButton(
-                      icon: Icon(Icons.close, color: Colors.white),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Text(
-                  property['name'],
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              // Eliminamos el espaciado aquí para que el precio quede más cerca del nombre
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '\$${property['price']} / mes',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Color.fromARGB(255, 165, 164, 164),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      '${property['measure']}',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Color.fromARGB(255, 165, 164, 164),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 10),
-            ],
-          ),
-        ),
       );
     },
   );
